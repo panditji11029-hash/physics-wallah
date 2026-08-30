@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Modules</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    cursor:pointer;
+}
+
+/* FIRST SCREEN */
+#start{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#000;
+}
+
+#btn{
+    padding:18px 32px;
+    background:#111;
+    color:white;
+    border:1px solid #555;
+    border-radius:10px;
+    font-family:Arial,sans-serif;
+    font-size:18px;
+    letter-spacing:.5px;
+    box-shadow:0 0 30px #222;
+    cursor:pointer;
+}
+
+#btn:active{
+    transform:scale(.92);
+}
+
+/* HORROR IMAGE */
+#screen{
+    position:fixed;
+    inset:-8%;
+    width:116%;
+    height:116%;
+
+    background-image:url("pic.png");
+    background-position:center;
+    background-size:cover;
+    background-repeat:no-repeat;
+
+    opacity:0;
+    transform:scale(1.05);
+}
+
+/* SUDDEN JUMPSCARE */
+.jumpscare{
+    animation:jumpscare .8s cubic-bezier(.1,.8,.2,1) forwards;
+}
+
+@keyframes jumpscare{
+
+    0%{
+        opacity:0;
+        transform:scale(1.05);
+    }
+
+    3%{
+        opacity:1;
+        transform:scale(1.8);
+    }
+
+    8%{
+        transform:scale(1.15) translate(-35px,20px);
+    }
+
+    13%{
+        transform:scale(1.35) translate(35px,-25px);
+    }
+
+    18%{
+        transform:scale(1.12) translate(-30px,-30px);
+    }
+
+    24%{
+        transform:scale(1.28) translate(30px,25px);
+    }
+
+    32%{
+        transform:scale(1.10) translate(-25px,10px);
+    }
+
+    45%{
+        transform:scale(1.18) translate(22px,-20px);
+    }
+
+    65%{
+        transform:scale(1.08) translate(-12px,15px);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1.04) translate(0,0);
+    }
+}
+
+/* CONSTANT VIOLENT VIBRATION */
+.shaking{
+    animation:shake .065s infinite linear;
+}
+
+@keyframes shake{
+
+    0%{
+        transform:translate(0,0) scale(1.04);
+    }
+
+    20%{
+        transform:translate(-14px,9px) scale(1.05);
+    }
+
+    40%{
+        transform:translate(16px,-12px) scale(1.06);
+    }
+
+    60%{
+        transform:translate(-12px,-14px) scale(1.05);
+    }
+
+    80%{
+        transform:translate(15px,13px) scale(1.06);
+    }
+
+    100%{
+        transform:translate(0,0) scale(1.04);
+    }
+}
+
+/* WHITE FLASH */
+#flash{
+    position:fixed;
+    inset:0;
+    z-index:90;
+    background:white;
+    opacity:0;
+    pointer-events:none;
+}
+
+.flash{
+    animation:flash .3s;
+}
+
+@keyframes flash{
+
+    0%{opacity:0}
+
+    10%{opacity:1}
+
+    20%{opacity:.1}
+
+    35%{opacity:.8}
+
+    100%{opacity:0}
+}
+
+/* CLICK IMPACT */
+.tap{
+    position:fixed;
+    z-index:200;
+
+    width:70px;
+    height:70px;
+
+    border:3px solid white;
+    border-radius:50%;
+
+    pointer-events:none;
+    opacity:0;
+
+    transform:translate(-50%,-50%) scale(.2);
+}
+
+.tap.show{
+    animation:tap .5s ease-out;
+}
+
+@keyframes tap{
+
+    0%{
+        opacity:1;
+        transform:translate(-50%,-50%) scale(.2);
+    }
+
+    100%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(2.5);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BUTTON -->
+<div id="start">
+    <div id="btn">
+        Click to get free modules
+    </div>
+</div>
+
+<!-- HORROR IMAGE -->
+<div id="screen"></div>
+
+<!-- FLASH -->
+<div id="flash"></div>
+
+<!-- MUSIC -->
+<audio id="music" src="music.wav" preload="auto"></audio>
+
+
+<script>
+
+const start = document.getElementById("start");
+const btn = document.getElementById("btn");
+const screen = document.getElementById("screen");
+const flash = document.getElementById("flash");
+const music = document.getElementById("music");
+
+
+function clickEffect(x,y){
+
+    const tap = document.createElement("div");
+
+    tap.className = "tap show";
+
+    tap.style.left = x + "px";
+    tap.style.top = y + "px";
+
+    document.body.appendChild(tap);
+
+    setTimeout(function(){
+        tap.remove();
+    },500);
+}
+
+
+function jumpscare(e){
+
+    /* CLICK RIPPLE */
+    if(e){
+        clickEffect(
+            e.clientX || window.innerWidth/2,
+            e.clientY || window.innerHeight/2
+        );
+    }
+
+    /* MUSIC */
+    music.volume = 1.0;
+    music.currentTime = 0;
+
+    music.play().catch(function(){
+        console.log("Music blocked by browser");
+    });
+
+
+    /* HIDE BUTTON */
+    start.style.opacity = "0";
+
+    setTimeout(function(){
+        start.style.display = "none";
+    },100);
+
+
+    /* FLASH */
+    flash.className = "flash";
+
+
+    /* BHOOT */
+    screen.className = "jumpscare";
+
+
+    /* VIOLENT SHAKE AFTER JUMPSCARE */
+    setTimeout(function(){
+
+        screen.classList.add("shaking");
+
+    },700);
+
+
+    /* FULLSCREEN */
+    if(document.documentElement.requestFullscreen){
+
+        document.documentElement
+        .requestFullscreen()
+        .catch(function(){});
+
+    }
+
+}
+
+
+/* BUTTON CLICK */
+btn.addEventListener("click",jumpscare);
+
+</script>
+
+</body>
+</html>
